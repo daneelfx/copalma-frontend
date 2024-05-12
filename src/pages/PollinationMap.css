@@ -1,0 +1,181 @@
+.map-container{
+    height: 100%;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.map{
+    height: 100%;
+    flex-basis: 90%;
+    border-radius: 0.8rem;
+    overflow: hidden;
+}
+
+.map-controls{
+    flex-basis: fit-content;
+    border-radius: 0.8rem;
+
+    color: rgba(0, 128, 255, 0.817);
+    background-color: rgba(0, 128, 255, 0.172);
+
+    display: flex;
+    padding: 1rem;
+    gap: 1rem;
+    flex-direction: column;
+}
+
+.map-controls__container{
+    padding: 1rem;
+    background-color: rgba(14, 14, 14, 0.362); 
+    border-radius: 0.8rem;
+}
+
+.map-controls__container:hover{
+    background-color: rgba(22, 22, 22, 0.362); 
+}
+
+.map-controls__container-title, .map-controls__container-row{
+    font-weight: 600;
+    letter-spacing: 0.08rem;
+}
+
+.map-controls__container-title--main{
+    color: rgba(255, 255, 255, 0.817);
+    /* background-color: rgba(255, 255, 255, 0.071); */
+    padding: 0 0 0.2rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.200);
+}
+
+.map-controls__container-title--secondary{
+    color: rgba(255, 255, 255, 0.817);
+    background-color: rgba(255, 255, 255, 0.100);  
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.4rem;
+    display: inline-block;
+}
+
+.circle{
+    height: 0.8rem;
+    width: 0.8rem;
+    background-color: rgba(255, 255, 255, 0.817);
+    background-color: rgba(0, 128, 255, 0.817);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.map-controls__container-body{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.35rem;
+}
+
+.map-controls__container-body--person-info{
+    margin-top: 0.7rem;
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.35rem;
+}
+
+.map-controls__container-row,
+.map-controls__counters-container,
+.map-controls__info-container{
+    position: relative;
+}
+
+.margin-left{
+    margin-left: 0.3rem;
+}
+
+.map-controls__person-name{
+    cursor: pointer;
+}
+
+.map-controls__person-name::before,
+.map-controls__person-id::before,
+.map-controls__person-entry-date::before,
+.map-controls__person-performance::before,
+.map-controls__counters-container::before,
+.map-controls__info-container::before{
+    position: absolute;
+    font-size: 0.55rem;
+    font-weight: 900;
+    display: inline-block;
+    left: 0;
+    top: -0.88rem;
+}
+
+/* .map-controls__person-name::before{
+    content: 'NOMBRE';
+} */
+
+
+.map-controls__person-id::before{
+    content: 'DOCUMENTO';
+}
+
+.map-controls__person-entry-date::before{
+    content: 'FECHA DE INGRESO';
+}
+
+.map-controls__person-performance::before{
+    content: 'DESEMPEÑO';
+}
+
+.map-controls__counters-container::before{
+    content: 'APLICACIONES';
+    color: rgba(255, 255, 255, 0.817);
+}
+
+.map-controls__area-info-container::before{
+    content: 'AREA';
+    color: rgba(255, 255, 255, 0.817);
+}
+
+.map-controls__time-info-container::before{
+    content: 'TIEMPO';
+    color: rgba(255, 255, 255, 0.817);
+}
+
+.map-controls__rate-info-container::before{
+    content: 'VELOCIDAD';
+    color: rgba(255, 255, 255, 0.817);
+}
+
+
+.map-controls__counters-container,
+.map-controls__info-container{
+    margin-top: 1.2rem;
+}
+
+.map-controls__counters-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.map-controls__counter-container{
+    display: flex;
+    flex-direction: column;
+    flex-basis: 29%;
+    gap: 0.4rem;
+    align-items: center;
+    border-radius: 0.6rem;
+    background-color: rgba(0, 128, 255, 0.062);
+    padding: 0.6rem;
+}
+
+.map-controls__counter-value{
+    font-weight: 800;
+    text-align: center;
+}
+
+.horizontal-grouping{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+
+
