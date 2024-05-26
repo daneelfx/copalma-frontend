@@ -6,7 +6,7 @@
 
 #root{
   height: 100vh;
-  background-color: #111;
+  background-color: rgba(150, 217, 69, 0.4);
   font-family: "Lato", sans-serif;
   padding: 1.5rem;
 }

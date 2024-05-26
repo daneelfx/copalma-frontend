@@ -121,7 +121,7 @@ const PollinationMap = () => {
         </div>
         <div className="map-controls__container">
           <p className="map-controls__container-title map-controls__container-title--main">
-            RANGO DE FECHAS
+            FECHAS
           </p>
           <DatePicker type="range" size="sm" />
         </div>
@@ -131,23 +131,17 @@ const PollinationMap = () => {
           </p>
           <div className="map-controls__counters-container">
             <div className="map-controls__counter-container">
-              <PiNumberCircleOneFill
-                size={30}
-                color="rgba(255, 255, 255, 0.817)"
-              />
+              <PiNumberCircleOneFill size={30} color="rgba(63, 105, 0, 0.8)" />
               <p className="map-controls__counter-value">128</p>
             </div>
             <div className="map-controls__counter-container">
-              <PiNumberCircleTwoFill
-                size={30}
-                color="rgba(255, 255, 255, 0.817)"
-              />
+              <PiNumberCircleTwoFill size={30} color="rgba(63, 105, 0, 0.8)" />
               <p className="map-controls__counter-value">256</p>
             </div>
             <div className="map-controls__counter-container">
               <PiNumberCircleThreeFill
                 size={30}
-                color="rgba(255, 255, 255, 0.817)"
+                color="rgba(63, 105, 0, 0.8)"
               />
               <p className="map-controls__counter-value">64</p>
             </div>
@@ -155,17 +149,22 @@ const PollinationMap = () => {
           <div className="horizontal-grouping">
             <div className="map-controls__info-container map-controls__area-info-container">
               <div className="map-controls__container-row map-controls__container-title--secondary">
-                <span>2.5 ha</span>
+                <span>2.8</span>
+              </div>
+            </div>
+            <div className="map-controls__info-container map-controls__calculated-area-info-container">
+              <div className="map-controls__container-row map-controls__container-title--secondary">
+                <span>2.5</span>
               </div>
             </div>
             <div className="map-controls__info-container map-controls__time-info-container">
               <div className="map-controls__container-row map-controls__container-title--secondary">
-                <span>6.5 h</span>
+                <span>6.5</span>
               </div>
             </div>
             <div className="map-controls__info-container map-controls__rate-info-container">
               <div className="map-controls__container-row map-controls__container-title--secondary">
-                <span>1.1 ha/h</span>
+                <span>1.1</span>
               </div>
             </div>
           </div>
