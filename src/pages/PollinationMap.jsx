@@ -1,4 +1,3 @@
-import Map, { Source, Layer } from 'react-map-gl'
 import './PollinationMap.css'
 import {
   PiCaretDownBold,
@@ -8,99 +7,294 @@ import {
   PiNumberCircleTwoFill,
   PiNumberCircleThreeFill,
 } from 'react-icons/pi'
+
+import React from 'react'
+import axios from 'axios'
+
+import { Checkbox, Loader } from '@mantine/core'
 import { DatePicker } from '@mantine/dates'
 
-const polygonJSON = {
-  type: 'Feature',
-  geometry: {
-    type: 'Polygon',
-    coordinates: [
-      [
-        [-73.574737, 3.559212],
-        [-73.571366, 3.557441],
-        [-73.570937, 3.551112],
-        [-73.572835, 3.553792],
-        [-73.574737, 3.559212],
-      ],
-    ],
-  },
-}
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const polygonJSON2 = {
-  type: 'Feature',
-  geometry: {
-    type: 'Polygon',
-    coordinates: [
-      [
-        [-73.568289, 3.555903],
-        [-73.571366, 3.557441],
-        [-73.570937, 3.551112],
-        [-73.567794, 3.547065],
-        [-73.568289, 3.555903],
-      ],
-    ],
-  },
-}
+import 'leaflet/dist/leaflet.css'
+import { colors } from '../constants'
+import { MapContainer, TileLayer, Polyline, Circle } from 'react-leaflet'
+import EmployeesList from '../components/EmployeesList'
 
-const polygonLayerStyle = {
-  id: 'my-datal',
-  type: 'fill',
-  source: 'my-datag', // reference the data source
-  layout: {},
-  paint: {
-    'fill-color': '#0080ff',
-    'fill-opacity': 0.5,
-  },
+const withLinePairsOptions = {
+  color: '#23F4D1',
+  smoothFactor: 0.0,
 }
-
-const polygonLayerStyle2 = {
-  id: 'my-data2',
-  type: 'fill',
-  source: 'my-data2', // reference the data source
-  layout: {},
-  paint: {
-    'fill-color': '#55dd22',
-    'fill-opacity': 0.5,
-  },
-}
+const withoutLinePairsOptions = { color: 'white', fillColor: '#000' }
 
 const PollinationMap = () => {
+  const [isLoadingEmployees, setIsLoadingEmployees] = useState(false)
+  const [isLoadingLocations, setIsLoadingLocations] = useState(false)
+  const [employees, setEmployees] = useState([])
+  const [dates, setDates] = useState([null, null])
+  const navigate = useNavigate()
+
+  let sessions = []
+
+  employees.forEach((employee) => {
+    if (
+      employee.geo?.sessions &&
+      Object.keys(employee.geo?.sessions).length > 0
+    ) {
+      for (const session in employee.geo?.sessions) {
+        sessions.push({
+          session,
+          inside_line_pairs: {
+            color_options: { color: employee.geo.color },
+            locations: employee.geo?.sessions[session]['with_line_pairs'],
+          },
+          outside_line_pairs: {
+            color_options: withoutLinePairsOptions,
+            locations: employee.geo?.sessions[session]['without_line_pairs'],
+          },
+        })
+      }
+    }
+  })
+
+  useEffect(() => {
+    const verifyToken = async () => {
+      const token = localStorage.getItem('token')
+
+      if (!token) return navigate('/')
+
+      try {
+        await axios.post(
+          'http://100.29.65.13:3002/api/auth/verify-token/',
+          {},
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        )
+      } catch (error) {
+        return navigate('/')
+      }
+    }
+
+    setIsLoadingEmployees(true)
+
+    const fetchEmployees = async () => {
+      try {
+        const { data } = await axios.get(
+          'http://100.29.65.13:3002/api/general/employees'
+        )
+
+        let remainingColors = [...colors]
+
+        const employees = data.map((employee) => {
+          const indexToBeDeleted = Math.floor(
+            Math.random() * remainingColors.length
+          )
+
+          return {
+            ...employee,
+            geo: {
+              color: remainingColors.splice(indexToBeDeleted, 1).at(0),
+              sessions: null,
+            },
+            isSelected: false,
+          }
+        })
+
+        setEmployees(employees)
+      } catch (error) {
+        alert('No es posible acceder a los datos')
+      }
+      setIsLoadingEmployees(false)
+    }
+
+    verifyToken()
+    fetchEmployees()
+  }, [])
+
+  useEffect(() => {
+    const employeesAltered = employees.map((employee) => ({
+      ...employee,
+      isSelected: false,
+      geo: { ...employee.geo, sessions: null },
+    }))
+
+    setEmployees(employeesAltered)
+  }, [dates])
+
+  const handleDateChange = (dates) => {
+    setDates(dates)
+  }
+
+  const handleSelectedEmployees = (id) => {
+    const employeesAltered = employees.map((employee) => {
+      if (employee.id == id)
+        return {
+          ...employee,
+          isSelected: !employee.isSelected,
+          geo: {
+            ...employee.geo,
+            sessions: employee.isSelected ? null : employee.geo.sessions,
+          },
+        }
+      return employee
+    })
+    setEmployees(employeesAltered)
+  }
+
+  const toggleAllSelectedEmployees = (areSelected) => {
+    const employeesAltered = employees.map((employee) => ({
+      ...employee,
+      isSelected: areSelected,
+      geo: { ...employee.geo, sessions: null },
+    }))
+    setEmployees(employeesAltered)
+  }
+
+  const fetchLocations = async (event) => {
+    setIsLoadingLocations(true)
+
+    event.preventDefault()
+
+    if (
+      employees.some(
+        (employee) => employee.isSelected && !employee.geo.sessions
+      ) &&
+      dates.at(0) instanceof Date &&
+      dates.at(1) instanceof Date
+    ) {
+      const startDate = new Date(dates.at(0))
+      const endDate = new Date(dates.at(1))
+
+      const startDateString = `${startDate.getFullYear()}-${
+        startDate.getMonth() + 1
+      }-${startDate.getDate()}`
+
+      endDate.setDate(endDate.getDate() + 1)
+
+      const endDateString = `${endDate.getFullYear()}-${
+        endDate.getMonth() + 1
+      }-${endDate.getDate()}`
+
+      const nationalIdsToFetch = employees
+        .filter((employee) => employee.isSelected && !employee.geo.sessions)
+        .map((employee) => employee.national_id)
+
+      try {
+        const { data } = await axios.get(
+          `http://100.29.65.13:3002/api/pollination/pollination-locations/bulk?national_id=${nationalIdsToFetch.join(
+            ','
+          )}&start_date=${startDateString}&end_date=${endDateString}`
+        )
+
+        const employeesAltered = employees.map((employee) => {
+          if (employee.national_id in data)
+            return {
+              ...employee,
+              geo: {
+                ...employee.geo,
+                sessions: data[employee.national_id].sessions,
+              },
+            }
+          return employee
+        })
+        setEmployees(employeesAltered)
+      } catch (error) {}
+    }
+    setIsLoadingLocations(false)
+  }
+
   return (
     <div className="map-container">
       <section className="map">
-        <Map
-          mapLib={import('mapbox-gl')}
-          initialViewState={{
-            longitude: -73.563114,
-            latitude: 3.566661,
-            zoom: 13.7,
-          }}
-          minZoom={13.2}
-          style={{ width: '100%', height: '100%' }}
-          mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
-          mapboxAccessToken="pk.eyJ1IjoiZGFuZWVsZngiLCJhIjoiY2x2enkzODNwMzRqdTJpbWc1YTllaGV5ZiJ9.k4snA45IyAWoKQJu9xvriw"
+        <MapContainer
+          className="full-height-map"
+          center={[3.565843, -73.575201]}
+          zoom={14.5}
+          minZoom={14}
+          maxZoom={18}
+          maxBounds={[]}
+          scrollWheelZoom={true}
         >
-          <Source id="my-data" type="geojson" data={polygonJSON}>
-            <Layer {...polygonLayerStyle} />
-          </Source>
-          {/* <Source id="my-data2" type="geojson" data={polygonJSON2}>
-            <Layer {...polygonLayerStyle2} />
-          </Source> */}
-        </Map>
+          <TileLayer
+            attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png"
+          />
+          {sessions.map(
+            ({ session, inside_line_pairs, outside_line_pairs }) => (
+              <React.Fragment key={session}>
+                <Polyline
+                  pathOptions={inside_line_pairs['color_options']}
+                  positions={inside_line_pairs['locations'].map(
+                    ({ latitude, longitude }) => [latitude, longitude]
+                  )}
+                  eventHandlers={{ click: () => alert('HOLA SOCIO') }}
+                />
+                {outside_line_pairs['locations'].map(
+                  ({ id, latitude, longitude }) => (
+                    <Circle
+                      key={id}
+                      center={[latitude, longitude]}
+                      pathOptions={outside_line_pairs['color_options']}
+                      radius={2}
+                    />
+                  )
+                )}
+              </React.Fragment>
+            )
+          )}
+        </MapContainer>
       </section>
       <section className="map-controls">
         <div className="map-controls__container">
           <p className="map-controls__container-title map-controls__container-title--main">
-            POLINIZADOR
+            FECHAS
+          </p>
+          <DatePicker
+            type="range"
+            size="sm"
+            value={dates}
+            allowSingleDateInRange
+            onChange={handleDateChange}
+          />
+        </div>
+        <div className="map-controls__container map-controls__container--employees">
+          <p className="map-controls__container-title map-controls__container-title--main">
+            POLINIZADORES
           </p>
           <div className="map-controls__container-body--person-info">
             <div className="map-controls__container-row map-controls__container-title--secondary map-controls__person-name">
-              <span>DANIEL SOLANO</span>
-              <span className="margin-left">
-                <PiCaretDownBold />
-              </span>
+              {isLoadingEmployees || isLoadingLocations ? (
+                <div className="loader-container">
+                  <Loader color="rgba(63, 105, 0, 0.8)" size={30} />
+                </div>
+              ) : (
+                <React.Fragment>
+                  <EmployeesList
+                    employees={employees}
+                    handleSelectedEmployees={handleSelectedEmployees}
+                    toggleAllSelectedEmployees={toggleAllSelectedEmployees}
+                    areEmployeesSelectable={
+                      !isLoadingLocations && dates.at(0) && dates.at(1)
+                    }
+                  />
+                  <br />
+                  {employees.some((employee) => employee.isSelected) ? (
+                    <button
+                      disabled={isLoadingLocations}
+                      onClick={fetchLocations}
+                      className="btn btn--fetch-employees"
+                    >
+                      CARGAR UBICACIONES
+                    </button>
+                  ) : null}
+                </React.Fragment>
+              )}
             </div>
-            <div className="map-controls__container-row map-controls__container-title--secondary map-controls__person-id">
+            {/* <div className="map-controls__container-row map-controls__container-title--secondary map-controls__person-id">
               <span>1022482543</span>
             </div>
             <div className="map-controls__container-row map-controls__container-title--secondary map-controls__person-entry-date">
@@ -116,16 +310,10 @@ const PollinationMap = () => {
               <span className="margin-left">
                 <PiStarBold />
               </span>
-            </div>
+            </div> */}
           </div>
         </div>
-        <div className="map-controls__container">
-          <p className="map-controls__container-title map-controls__container-title--main">
-            FECHAS
-          </p>
-          <DatePicker type="range" size="sm" />
-        </div>
-        <div className="map-controls__container">
+        {/* <div className="map-controls__container">
           <p className="map-controls__container-title map-controls__container-title--main">
             POLINIZACIÓN
           </p>
@@ -168,7 +356,7 @@ const PollinationMap = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </section>
     </div>
   )
