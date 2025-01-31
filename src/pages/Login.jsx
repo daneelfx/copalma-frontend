@@ -20,7 +20,7 @@ function LoginPage() {
         }
       )
       localStorage.setItem('token', data.token)
-      navigate('/map')
+      navigate('/lines')
     } catch (error) {
       setErrorMessage('Credenciales inválidas. Intente nuevamente')
     }

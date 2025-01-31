@@ -12,9 +12,9 @@ const EmployeesList = ({
   )
 
   return (
-    <ul className="employees__list">
+    <ul className="items__list">
       {employees.map((e) => (
-        <li key={e.id} className="employee__list-container">
+        <li key={e.id} className="items__list-container">
           <span>
             <Checkbox
               disabled={!areEmployeesSelectable}

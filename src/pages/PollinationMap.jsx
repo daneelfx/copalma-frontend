@@ -21,6 +21,7 @@ import 'leaflet/dist/leaflet.css'
 import { colors } from '../constants'
 import { MapContainer, TileLayer, Polyline, Circle } from 'react-leaflet'
 import EmployeesList from '../components/EmployeesList'
+import { MdOutlineNoEncryptionGmailerrorred } from 'react-icons/md'
 
 const withLinePairsOptions = {
   color: '#23F4D1',
@@ -208,8 +209,8 @@ const PollinationMap = () => {
   }
 
   return (
-    <div className="map-container">
-      <section className="map">
+    <div className="container">
+      <section className="left-pane">
         <MapContainer
           className="full-height-map"
           center={[3.565843, -73.575201]}
@@ -248,9 +249,9 @@ const PollinationMap = () => {
           )}
         </MapContainer>
       </section>
-      <section className="map-controls">
-        <div className="map-controls__container">
-          <p className="map-controls__container-title map-controls__container-title--main">
+      <section className="card">
+        <div className="card__container">
+          <p className="card__container-title card__container-title--main">
             FECHAS
           </p>
           <DatePicker
@@ -261,12 +262,12 @@ const PollinationMap = () => {
             onChange={handleDateChange}
           />
         </div>
-        <div className="map-controls__container map-controls__container--employees">
-          <p className="map-controls__container-title map-controls__container-title--main">
+        <div className="card__container">
+          <p className="card__container-title card__container-title--main">
             POLINIZADORES
           </p>
-          <div className="map-controls__container-body--person-info">
-            <div className="map-controls__container-row map-controls__container-title--secondary map-controls__person-name">
+          <div className="card__container-body--list-info">
+            <div className="card__container-row card__container-title--secondary card__list-value">
               {isLoadingEmployees || isLoadingLocations ? (
                 <div className="loader-container">
                   <Loader color="rgba(63, 105, 0, 0.8)" size={30} />
@@ -286,7 +287,7 @@ const PollinationMap = () => {
                     <button
                       disabled={isLoadingLocations}
                       onClick={fetchLocations}
-                      className="btn btn--fetch-employees"
+                      className="btn btn--fetch"
                     >
                       CARGAR UBICACIONES
                     </button>
@@ -294,13 +295,13 @@ const PollinationMap = () => {
                 </React.Fragment>
               )}
             </div>
-            {/* <div className="map-controls__container-row map-controls__container-title--secondary map-controls__person-id">
+            {/* <div className="card__container-row card__container-title--secondary card__person-id">
               <span>1022482543</span>
             </div>
-            <div className="map-controls__container-row map-controls__container-title--secondary map-controls__person-entry-date">
+            <div className="card__container-row card__container-title--secondary card__person-entry-date">
               <span>05/MAY/2021 (HACE 3 AÑOS)</span>
             </div>
-            <div className="map-controls__container-row map-controls__container-title--secondary map-controls__person-performance">
+            <div className="card__container-row card__container-title--secondary card__person-performance">
               <span>
                 <PiStarFill />
               </span>
@@ -313,50 +314,50 @@ const PollinationMap = () => {
             </div> */}
           </div>
         </div>
-        {/* <div className="map-controls__container">
-          <p className="map-controls__container-title map-controls__container-title--main">
+        <div className="card__container">
+          <p className="card__container-title card__container-title--main">
             POLINIZACIÓN
           </p>
-          <div className="map-controls__counters-container">
-            <div className="map-controls__counter-container">
+          <div className="card__counters-container">
+            <div className="card__counter-container">
               <PiNumberCircleOneFill size={30} color="rgba(63, 105, 0, 0.8)" />
-              <p className="map-controls__counter-value">128</p>
+              <p className="card__counter-value">128</p>
             </div>
-            <div className="map-controls__counter-container">
+            <div className="card__counter-container">
               <PiNumberCircleTwoFill size={30} color="rgba(63, 105, 0, 0.8)" />
-              <p className="map-controls__counter-value">256</p>
+              <p className="card__counter-value">256</p>
             </div>
-            <div className="map-controls__counter-container">
+            <div className="card__counter-container">
               <PiNumberCircleThreeFill
                 size={30}
                 color="rgba(63, 105, 0, 0.8)"
               />
-              <p className="map-controls__counter-value">64</p>
+              <p className="card__counter-value">64</p>
             </div>
           </div>
           <div className="horizontal-grouping">
-            <div className="map-controls__info-container map-controls__area-info-container">
-              <div className="map-controls__container-row map-controls__container-title--secondary">
+            <div className="card__info-container card__area-info-container">
+              <div className="card__container-row card__container-title--secondary">
                 <span>2.8</span>
               </div>
             </div>
-            <div className="map-controls__info-container map-controls__calculated-area-info-container">
-              <div className="map-controls__container-row map-controls__container-title--secondary">
+            <div className="card__info-container card__calculated-area-info-container">
+              <div className="card__container-row card__container-title--secondary">
                 <span>2.5</span>
               </div>
             </div>
-            <div className="map-controls__info-container map-controls__time-info-container">
-              <div className="map-controls__container-row map-controls__container-title--secondary">
+            <div className="card__info-container card__time-info-container">
+              <div className="card__container-row card__container-title--secondary">
                 <span>6.5</span>
               </div>
             </div>
-            <div className="map-controls__info-container map-controls__rate-info-container">
-              <div className="map-controls__container-row map-controls__container-title--secondary">
+            <div className="card__info-container card__rate-info-container">
+              <div className="card__container-row card__container-title--secondary">
                 <span>1.1</span>
               </div>
             </div>
           </div>
-        </div> */}
+        </div>
       </section>
     </div>
   )

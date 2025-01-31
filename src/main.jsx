@@ -5,7 +5,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import { Link } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
-import PollinationMap from './pages/PollinationMap'
+import PollinationMap from './pages/PollinationMap.jsx'
+import PollinationLines from './pages/PollinationLines'
 
 import Header from './components/Header'
 import Login from './pages/Login.jsx'
@@ -23,6 +24,14 @@ const router = createBrowserRouter([
     element: (
       <MantineProvider>
         <PollinationMap />
+      </MantineProvider>
+    ),
+  },
+  {
+    path: '/lines',
+    element: (
+      <MantineProvider>
+        <PollinationLines />
       </MantineProvider>
     ),
   },
