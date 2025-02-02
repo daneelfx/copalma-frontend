@@ -34,13 +34,8 @@ const LinesPairList = ({
               second,
               third,
               num_palms: numPalms,
-              area_base: areBase,
-              land_parcel_palms_density: palmsDensity,
+              area_percentage: areaPercentage,
             }) => {
-              const linesPairArea =
-                (startLine == endLine
-                  ? numPalmsStartLine
-                  : numPalmsStartLine + numPalmsEndLine) / palmsDensity
               return (
                 <tr key={universalId} className="employee-container">
                   <td>{createdAt.split('T').at(0)}</td>
@@ -48,27 +43,25 @@ const LinesPairList = ({
                   <td className="pollinations-container">
                     <div className="pollinations-container__value-container number-container">
                       <span className="number-pollinations__value">
-                        {first}
+                        {first ?? '-'}
                       </span>
                       <span className="number-pollinations-label">1</span>
                     </div>
                     <div className="pollinations-container__value-container number-container">
                       <span className="number-pollinations__value">
-                        {second}
+                        {second ?? '-'}
                       </span>
                       <span className="number-pollinations-label">2</span>
                     </div>
                     <div className="pollinations-container__value-container number-container">
                       <span className="number-pollinations__value">
-                        {third}
+                        {third ?? '-'}
                       </span>
                       <span className="number-pollinations-label">3</span>
                     </div>
                   </td>
                   <td className="center">
-                    {areBase
-                      ? `${Math.round((areBase * 100) / linesPairArea)}%`
-                      : '-'}
+                    {areaPercentage ? `${areaPercentage}%` : '-'}
                   </td>
                   <td className="center">{numPalms ?? '-'}</td>
                   <td>
