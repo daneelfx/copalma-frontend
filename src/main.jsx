@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createHashRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import { Link } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
@@ -14,7 +14,7 @@ import Login from './pages/Login.jsx'
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Login />,
